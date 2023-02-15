@@ -1,0 +1,5 @@
+.sidebar-format {
+    display: flex;
+    overflow: scroll;
+    height: 100vh;
+}
