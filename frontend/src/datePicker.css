@@ -1,0 +1,31 @@
+.css-hlj6pa-MuiDialogActions-root{
+    display: none !important;
+}
+.css-1hbyad5-MuiTypography-root{
+    display: none !important;
+}
+
+.css-z3au5x-MuiButtonBase-root-MuiIconButton-root-MuiPickersToolbar-penIconButton{
+    display: none !important;
+}
+
+.css-1vcokmn-MuiCalendarOrClockPicker-root{
+    background-color:rgb(191, 144, 144);
+}
+.css-144dnr3-MuiBadge-badge{
+    width: 20px;
+    color: limegreen;
+}
+.css-bkrceb-MuiButtonBase-root-MuiPickersDay-root.Mui-selected{
+    background-color: rgb(229, 127, 127);
+}
+
+.css-jhsfre-MuiGrid-root-MuiPickersToolbar-content{
+    justify-content: center !important;
+    background-color: rgb(229, 127, 127);
+    padding: 1rem;
+}
+
+.css-bkrceb-MuiButtonBase-root-MuiPickersDay-root{
+    background-color: rgb(229, 127, 127);
+}

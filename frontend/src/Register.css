@@ -1,0 +1,73 @@
+.wrapper {
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.register {
+    width: 500px;
+    height: 600px;
+    background-color: azure;
+    margin: 10% 30%;
+    position: absolute;
+    border-radius: 10px;
+}
+
+.blurr {
+    position: relative;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #69696a;
+    filter: blur(18px);
+}
+
+.AccountLabel {
+    text-align: center;
+    font-size: 15px;
+    padding: 10px 20%;
+    font-family: Arial, Helvetica, sans-serif;
+    border-bottom: 1px solid black;
+}
+
+.RegisterForm {
+    display: grid;
+    gap: 20px;
+}
+
+label {
+    display: block;
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-right: 400px;
+
+}
+
+input {
+    display: block;
+    width: 400px;
+    height: 35px;
+    margin-left: 30px;
+    border: 1px solid rgb(132, 127, 127);
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.firstNameWrapper{
+    margin-top: 10px;
+}
+.btn {
+    width: 200px;
+    height: 40px;
+    border-radius: 5px;
+    text-align: center;
+    margin-left: 30%;
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+}
