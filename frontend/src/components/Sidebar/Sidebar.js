@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import '../Sidebar/Sidebar.css'
+import './Sidebar.css'
 import {
     CDBSidebar,
     CDBSidebarContent,

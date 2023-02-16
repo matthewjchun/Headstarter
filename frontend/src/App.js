@@ -3,6 +3,7 @@ import './App.css';
 import Dummy from './components/dummy';
 import Sidebar from './components/Sidebar/Sidebar';
 import Video from './components/Video/Video';
+import Zoom from './components/Video/Zoom';
 import { PageContext } from './contexts/Page';
 
 
@@ -24,7 +25,8 @@ function App() {
               number={page}
             ></Dummy>
             :
-            <Video></Video>
+            // <Video></Video>
+            <Zoom></Zoom>
         }
       </div>
     </div>

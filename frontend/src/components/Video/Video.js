@@ -1,7 +1,11 @@
+import './Video.css'
+
 
 function Video() {
+
+
   return (
-    <div className="App">
+    <div className="Video">
       sup
     </div>
   );
