@@ -27,7 +27,7 @@ function Sidebar() {
 
     return (
         <div className="sidebar-format">
-            <CDBSidebar textColor="#fff" backgroundColor="#333">
+            <CDBSidebar textColor="#fff" backgroundColor="#474E68">
                 <CDBSidebarHeader prefix={<i className="fa fa-bars fa-large"></i>}>
                     <p>Navigation</p>
                 </CDBSidebarHeader>

@@ -1,41 +1,85 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+require('dotenv').config()
+const express = require('express')
+const bodyParser = require('body-parser')
+const crypto = require('crypto')
+const cors = require('cors')
+const KJUR = require('jsrsasign')
+const nodemailer = require('nodemailer')
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const app = express()
+const port = process.env.PORT || 4000
 
-var app = express();
+app.use(bodyParser.json(), cors())
+app.options('*', cors())
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.post('/signature', (req, res) => {
+  console.log(req.body.meetingNumber)
+  const iat = Math.round(new Date().getTime() / 1000) - 30;
+  const exp = iat + 60 * 60 * 2
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+  const oHeader = { alg: 'HS256', typ: 'JWT' }
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+  const oPayload = {
+    sdkKey: process.env.ZOOM_SDK_KEY,
+    mn: req.body.meetingNumber,
+    role: req.body.role,
+    iat: iat,
+    exp: exp,
+    appKey: process.env.ZOOM_SDK_KEY,
+    tokenExp: iat + 60 * 60 * 2
+  }
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+  const sHeader = JSON.stringify(oHeader)
+  const sPayload = JSON.stringify(oPayload)
+  // console.log(sPayload)
+  const signature = KJUR.jws.JWS.sign('HS256', sHeader, sPayload, process.env.ZOOM_SDK_SECRET)
+  console.log(signature)
+
+  res.json({
+    signature: signature
+  })
+})
+
+app.post('/creds', (req, res) => {
+  res.json({
+    sdkKey: process.env.ZOOM_SDK_KEY
+  })
+})
+
+app.post('/send-email', async (req, res) => {
+  console.log("request received")
+  const { recipient, subject, message } = req.body;
+
+  let testAccount = await nodemailer.createTestAccount();
+
+  const transporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: testAccount.user, // generated ethereal user
+      pass: testAccount.pass, // generated ethereal password
+    },
+  })
+
+  let info = await transporter.sendMail({
+    from: '"Groupstarter 👻" <noreplygroupstarter@gmail.com>', // sender address
+    to: recipient, // list of receivers
+    subject: subject, // Subject line
+    text: message, // plain text body
+    html: `<p>Your group member, Matthew Chun, has sent you an invite to join a team meeting on Groupstarter. Head over now!<p>`, // html body
+  });
+
+  console.log("Message sent: %s", info.messageId);
+  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+
+  res.json({
+    preview: nodemailer.getTestMessageUrl(info)
+  })
+
+})
+
+
+app.listen(port, () => {
+  console.log(`Server is running on port: ${port}`);
 });
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-module.exports = app;

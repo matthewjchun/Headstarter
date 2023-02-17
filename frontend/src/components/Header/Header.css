@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Suez+One&display=swap');
+
+
+.title-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+
+
+.dummy-header {
+    font-size: 50px;
+    height: 10vh;
+    background-color: #6B728E;
+    text-align: left;
+    padding-left: 1vw;
+    font-family: 'Suez One', sans-serif;
+}
+
+
+.Register {
+    font-size: 2.5vw;
+    background-color: none;
+    padding-left: 59vw;
+    padding-top: 1vh;
+    display: flex;
+    padding-bottom: 0%;
+    display: inline-block;
+    font-family: sans-serif;
+}
+
+
+.Login {
+    font-size: 2.5vw;
+    background-color: none;
+    padding-top: 1vh;
+    padding-left: 0vw;
+    padding-right: 2.5vw;
+    padding-bottom: 0%;
+    display: inline-block;
+    font-family: sans-serif;
+}

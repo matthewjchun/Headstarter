@@ -1,84 +1,103 @@
-import React, { useEffect } from 'react';
-import { ZoomMtg } from '@zoomus/websdk';
-import { Buffer } from 'buffer';
-import Stream from 'stream-browserify';
-import crypto from 'crypto-browserify';
-import { pbkdf2, randomBytes, createCipheriv, createDecipheriv } from 'crypto-browserify';
+import React, { useEffect, useRef, useState } from 'react';
+// import ZoomMtgEmbedded from '@zoomus/websdk/embedded' <-- component view
+import { ZoomMtg } from '@zoomus/websdk'; // client view
+import axios from 'axios';
+// import Modal from 'react-bootstrap/Modal';
 
+const Zoom = (props) => {
+    // const { lgShow, setLgShow } = prop
 
-const Zoom = () => {
-    const axios = require('axios')
-    crypto.util = {
-        Buffer,
-        process: {
-            nextTick: setTimeout,
-        },
-        randomBytes(size, callback) {
-            const buffer = Buffer.alloc(size);
-            window.crypto.getRandomValues(buffer);
-            callback(null, buffer);
-        },
-    };
+    const [ready, setReady] = useState(false)
 
-    crypto.stream = Stream;
+    // setting up component view zoom integration
+    // const client = ZoomMtgEmbedded.createClient()
+    // let meetingSDKElement = document.getElementById('meetingSDKElement')
+    // client.init({ zoomAppRoot: meetingSDKElement, language: 'en-US' })
 
+    const zoomMeeting = useRef(null);
 
-    ZoomMtg.setZoomJSLib('https://source.zoom.us/2.9.7/lib', '/av')
-    // loads dependent assets
-    ZoomMtg.preLoadWasm()
-    ZoomMtg.prepareWebSDK()
-    // loads language files, also passes any error messages to the ui
-    ZoomMtg.i18n.load('en-US')
-    ZoomMtg.i18n.reload('en-US')
+    const meetingId = 74467570103
+    var signature = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZGtLZXkiOiJRMHlMcFNVblQtYVgzSkswRkFVYUlRIiwiaWF0IjoxNjc2NTk4MTEwLCJleHAiOjE2NzY2MDUzMTAsImFwaUtleSI6IlEweUxwU1VuVC1hWDNKSzBGQVVhSVEiLCJ0b2tlbkV4cCI6MTY3NjYwNTMxMH0.qA7RwlaLtWnBAwV3BPtWh-2s5n3HURa8BSm4hgNM77E'
+    var sdkKey = 'Q0yLpSUnT-aX3JK0FAUaIQ'
 
-    var sdkKey = '5EWJyhRPSSizDcvZp86VDA'
-    var sdkSecret = '1S93XeAqMMlcLtttqzbk8QZvvSvaISmLpg5l'
-    var meetingId = 73053542475
-    var signature = ''
-
-    const timestamp = new Date().getTime();
-    const message = Buffer.from(sdkKey + meetingId + timestamp + 0).toString('base64');
-    const hash = crypto.createHmac('sha256', sdkSecret).update(message).digest('base64');
-    const signaturePost = Buffer.from(`${sdkKey}.${meetingId}.${timestamp}.0.${hash}`).toString('base64');
-
-    useEffect = async () => {
-        await axios.post(`https://api.zoom.us/v2/meetings/${meetingId}/token`, {}, {
-            headers: {
-                'Authorization': `Bearer ${signaturePost}`
-            }
-        }).then((response) => {
-            signature = response.data.token;
-            // Use the meetingToken to join the meeting using the Zoom SDK
-        }).catch((error) => {
-            console.error(error);
-        });
+    // setting up the body for the server request to grab the meeting signature and sdkKey required for join operation
+    const body = {
+        meetingNumber: meetingId,
+        role: 0
     }
 
-    var passWord = 74359834331
-    var userName = "Matthew Chun"
+    useEffect(() => {
+        ZoomMtg.setZoomJSLib('https://source.zoom.us/2.9.7/lib', '/av')
+        // loads dependent assets
+        ZoomMtg.preLoadWasm()
+        ZoomMtg.prepareWebSDK()
+        // loads language files, also passes any error messages to the ui
+        ZoomMtg.i18n.load('en-US')
+        ZoomMtg.i18n.reload('en-US')
 
-    ZoomMtg.init({
-        leaveUrl: 'http://localhost:3000',
-        success: (success) => {
-            ZoomMtg.join({
-                sdkKey: sdkKey,
-                signature: signature,
-                meetingNumber: meetingId,
-                passWord: passWord,
-                userName: userName,
-                success: (success) => {
-                    console.log(success)
-                },
-                error: (error) => {
+        async function fetchData() {
+            await axios.post('http://localhost:4000/signature', body)
+                .then(response => {
+                    signature = response.data.signature
+                })
+                .catch(error => {
                     console.log(error)
-                }
-            })
-        },
-        error: (error) => {
-            console.log(error)
-        }
-    })
+                });
 
+            await axios.post('http://localhost:4000/creds')
+                .then(response => {
+                    sdkKey = response.data.sdkKey
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+
+            console.log(signature)
+            console.log(sdkKey)
+        }
+
+        fetchData();
+
+        document.getElementById('zmmtg-root').style.display = 'block'
+
+        console.log(signature)
+        console.log(sdkKey)
+
+        ZoomMtg.init({
+            leaveUrl: 'http://localhost:3000',
+            success: (success) => {
+                ZoomMtg.join({
+                    meetingNumber: meetingId,
+                    userName: "Matt",
+                    sdkKey: sdkKey,
+                    signature: signature,
+                    passWord: "y8eAyK",
+                    success: (success) => {
+                        console.log('Zoom Meeting Joined!')
+                    },
+                    error: (error) => {
+                        console.log(error)
+                    }
+                })
+            },
+            error: (error) => {
+                console.log(error)
+            },
+        })
+    }, []);
+
+
+
+    return (
+        <div>
+            {ready ?
+                <div ref={zoomMeeting}></div>
+                :
+                null
+            }
+
+        </div>
+    )
 
 };
 

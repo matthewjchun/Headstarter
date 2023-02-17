@@ -1,6 +1,36 @@
-.Video {
+.video {
     display: flex;
+    flex-direction: row;
+    background-color: #404258;
+    width: 177vh;
+    /* margin-top: 15vh;
+    margin-left: 20vh; */
     align-items: center;
-    justify-content: center;
-    margin-left: 40%;
+    /* justify-content: center; */
+    /* margin-left: 40%; */
+}
+
+.video-groupmates {
+    margin-top: 15vh;
+    margin-left: 20vh;
+    width: 50vh;
+    height: 70vh;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    /* align-content: center; */
+    justify-content: flex-start;
+}
+
+.video-cards {
+    width: 50vh;
+    height: 25vh;
+    /* background-color: #383434; */
+    background-color: #474E68;
+    color: white;
+}
+
+.video-zoom-btn {
+    margin-left: 20vh;
+    color: white;
 }
