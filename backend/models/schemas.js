@@ -12,3 +12,14 @@ const userSchema = new Schema({
 });
 
 mongoose.model('user', userSchema);
+
+const calendarSchema = new Schema({
+    year: {type:String, require:true},
+    date: {type:String, require:true},
+    month: {type:String, require:true},
+    clock: {type:String, require: true},
+},{
+    collection: "calendar",
+});
+
+mongoose.model('calendar', calendarSchema);

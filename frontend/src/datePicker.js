@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import TextField from '@mui/material/TextField';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -8,9 +8,23 @@ import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 import CheckIcon from '@mui/icons-material/Check';
 import './datePicker.css'
 
-const Cal = () => {
+export function Cal ({setSelectedDate}){
     const [value, setValue] = useState(new Date());
-    const [highlightedDays, setHighlightedDays] = useState([ 1, 3, 4, 13]);
+    setSelectedDate(value);
+    const [highlightedDays, setHighlightedDays] = useState([]);
+    const [getDate, setDate] = useState([]);
+    useEffect(() => {
+        fetch("http://localhost:4000/getCalendar",{
+            method:"GET",
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            setDate(data.data);
+        }); 
+    }, []);
+    for (var i=0; i < getDate.length; i++) {
+        highlightedDays.push(parseInt(getDate.pop().date));
+    } 
 return(
         <LocalizationProvider dateAdapter= {AdapterDateFns}>
             <StaticDatePicker

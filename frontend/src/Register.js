@@ -73,7 +73,7 @@ export class Register extends Component{
                         </div>
                         <button type="submit" className="btn">Submit</button>
                     </form>
-                    
+                    <button onClick={() => this.props.onFormSwitch('register')}>Already have an Account? LogIn here,</button>
                 </div>
             </div>
         )

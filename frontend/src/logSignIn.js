@@ -9,7 +9,29 @@ class Login extends Component {
             email: "",
             password: "",
         };
+         this.handleSubmit = this.handleSubmit.bind(this);
     };
+    handleSubmit(e){
+        e.preventDefault();
+        const {email, password} = this.state;
+        console.log(email, password);
+        fetch("http://localhost:4000/login",{
+            method:"POST",
+            crossDomain:true,
+            headers:{
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "Access-Control-Allow-Origin": "*",
+            },
+            body: JSON.stringify({
+                email,
+                password,
+            }),
+        }).then((res) => res.json())
+        .then((data) => {
+            console.log(data, "User");
+        });
+    }
     render(){
         return(
             <div className="wrapper">
@@ -20,7 +42,7 @@ class Login extends Component {
                             <h1>Log In</h1>
                         </div>
                     </div>
-                    <form action="" className="logInForm">
+                    <form action="" className="logInForm" onSubmit={this.handleSubmit} >
                         <div className="emailWrapper">
                             <label type="email">Email:</label>
                             <input type="email" name="email" onChange={(e) => this.setState({email: e.target.value})}></input>
@@ -30,7 +52,7 @@ class Login extends Component {
                             <input type="password" name="password" onChange={(e) => this.setState({password: e.target.value})}></input>
                         </div>
 
-                        <button className="btn">Submit</button>
+                        <button type="submit" className="btn">Submit</button>
                     </form>
                     <button onClick={() => this.props.onFormSwitch('register')}>Don't have an account? Register here,</button>
                 </div>
